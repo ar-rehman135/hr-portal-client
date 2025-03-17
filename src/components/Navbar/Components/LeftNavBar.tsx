@@ -46,7 +46,7 @@ const LeftNavbar = ({ open, setOpen }: LeftNavbarProps) => {
     >
       <div className="flex items-center justify-center py-6 border-b border-border">
         <Image
-          src="/images/logo.png"
+          src="/images/logo.PNG"
           alt="Hr Analytics Logo"
           width={150}
           height={50}

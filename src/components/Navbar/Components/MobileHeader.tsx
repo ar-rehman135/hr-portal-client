@@ -45,7 +45,7 @@ export function MobileHeader({
       <div className="w-full flex justify-between my-6">
         <div className="flex items-center">
           <Image
-            src="/images/logo.png"
+            src="/images/logo.PNG"
             alt="HR PORTAL Logo"
             width={140}
             height={30}
