@@ -9,12 +9,10 @@ export function UsageMetrics() {
     (state: AppState) => state.dashboard.usageStats
   );
 
-  console.log('usageStats123', usageStats);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <UsageOverTime chart_data={usageStats}/>
-      <QueriesPerUser unique_users={usageStats?.unique_users}/>
+      <UsageOverTime chart_data={usageStats} />
+      <QueriesPerUser unique_users={usageStats?.avg_queries_per_user} />
     </div>
   );
 }

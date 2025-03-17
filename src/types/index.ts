@@ -18,8 +18,20 @@ export interface ILayoutProps {
   showSearch?: boolean;
   onSearch?: (searchText: string) => void;
   showSelect?: boolean;
-  onSelect?: (selectedValue: string) => void;
-  selectedValue?: string;
+  handleSelectChange?: (value: string) => void;
+  selected?: string;
+  user?: any;
+  handleLogout?: () => void;
+}
+
+export interface IHeaderProps {
+  children?: ReactNode;
+  title?: string;
+  showSearch?: boolean;
+  onSearch?: (searchText: string) => void;
+  showSelect?: boolean;
+  handleSelectChange?: (value: string) => void;
+  selected?: string;
 }
 
 export interface User {
