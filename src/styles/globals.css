@@ -1,0 +1,126 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 239, 81%, 68%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 292 84% 66%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 119 100% 40%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 96%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 142.1 76.2% 36.3%;
+
+    --radius: 0.5rem;
+
+    --scroll-thumb: 210 40% 96.1%;
+
+    --placeholder: 0 0% 0% 0.3;
+
+    --white: 0 0% 100%;
+
+  }
+
+  .dark {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 239, 81%, 68%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 292 84% 66%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 119 100% 40%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 96%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 142.1 76.2% 36.3%;
+
+    --radius: 0.5rem;
+
+    --scroll-thumb: 210 40% 96.1%;
+    --placeholder: 0 0% 0% 0.3;
+
+    --white: 0 0% 100%;
+
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.navbar-custom {
+  &:hover {
+    span {
+      @apply text-white;
+    }
+  }
+  span {
+    @apply text-black;
+  }
+}
+
+
+.header-custom {
+  box-shadow: 0px 1px 10px 0px hsla(0, 0%, 0%, 0.15);
+}
+
+.custom-logout-container {
+  @media (max-height: 600px) {
+    position: relative !important;
+    width: 99% !important;
+  }
+}
