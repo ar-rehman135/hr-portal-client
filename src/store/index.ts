@@ -4,12 +4,15 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import { apiSlice } from './features/api/apiSlice';
 
 import rootReducer from './rootReducer';
+import { protectedSlice } from './features/api/protectedSlice';
 
 export const store = configureStore({
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
+    getDefaultMiddleware()
+      .concat(protectedSlice.middleware)
+      .concat(protectedSlice.middleware),
 });
 
 setupListeners(store.dispatch);

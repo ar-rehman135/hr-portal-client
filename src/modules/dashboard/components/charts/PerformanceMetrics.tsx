@@ -27,38 +27,6 @@ ChartJS.register(
   Filler
 );
 
-const data = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  datasets: [
-    {
-      label: 'Satisfaction',
-      data: [100, 80, 60, 120, 150, 100, 80],
-      borderColor: COLORS.PINK,
-      backgroundColor: 'rgba(224, 64, 251, 0.1)',
-      tension: 0.4,
-      fill: false,
-      pointBackgroundColor: COLORS.PINK,
-      pointBorderColor: '#fff',
-      pointBorderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 4,
-    },
-    {
-      label: 'Resolution',
-      data: [50, 70, 40, 50, 40, 60, 50],
-      borderColor: COLORS.LIGHT_BLUE,
-      backgroundColor: 'rgba(92, 107, 192, 0.1)',
-      tension: 0.4,
-      fill: false,
-      pointBackgroundColor: COLORS.LIGHT_BLUE,
-      pointBorderColor: COLORS.WHITE,
-      pointBorderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 4,
-    },
-  ],
-};
-
 const options = {
   responsive: true,
   maintainAspectRatio: false,
@@ -143,17 +111,65 @@ const options = {
       radius: (context: any) => {
         const index = context.dataIndex;
         const datasetIndex = context.datasetIndex;
-        return datasetIndex === 0 && index === 4 ? 4 : 0; // Show point only at Friday for Satisfaction
+        return datasetIndex === 0 && index === 4 ? 4 : 0;
       },
       hoverRadius: 4,
     },
   },
 };
 
-export function PerformanceMetrics() {
+export function PerformanceMetrics({
+  performancesData,
+}: {
+  performancesData: any;
+}) {
+  if (!performancesData) {
+    return null;
+  }
+
+  const labels = performancesData.map((item: any) => item.date);
+  const satisfactionData = performancesData.map(
+    (item: any) => item.satisfaction_rate
+  );
+  const resolutionData = performancesData.map(
+    (item: any) => item.resolution_rate
+  );
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'Satisfaction',
+        data: satisfactionData,
+        borderColor: COLORS.PINK,
+        backgroundColor: 'rgba(224, 64, 251, 0.1)',
+        tension: 0.4,
+        fill: false,
+        pointBackgroundColor: COLORS.PINK,
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+      },
+      {
+        label: 'Resolution',
+        data: resolutionData,
+        borderColor: COLORS.LIGHT_BLUE,
+        backgroundColor: 'rgba(92, 107, 192, 0.1)',
+        tension: 0.4,
+        fill: false,
+        pointBackgroundColor: COLORS.LIGHT_BLUE,
+        pointBorderColor: COLORS.WHITE,
+        pointBorderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+      },
+    ],
+  };
+
   return (
     <Card className="border-gray-200 shadow-sm rounded-2xl">
-      <CardHeader className="flex  flex-row items-center justify-between pb-4 pt-2 px-6 bg-border rounded-tl-2xl rounded-tr-2xl">
+      <CardHeader className="flex flex-row items-center justify-between pb-4 pt-2 px-6 bg-border rounded-tl-2xl rounded-tr-2xl">
         <div>
           <h3 className="text-base font-medium text-primary">
             Performance Metrics
@@ -169,13 +185,11 @@ export function PerformanceMetrics() {
         </div>
         <div className="mt-4 flex space-x-6 text-xs">
           <div className="flex items-center">
-            <div
-              className={`w-3 h-3 rounded-full bg-[${COLORS.MAGENTA}] mr-2`}
-            ></div>
+            <div className="w-3 h-3 rounded-full bg-[#E040FB] mr-2"></div>
             <span className="text-gray-600">Satisfaction</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-primary mr-2"></div>
+            <div className="w-3 h-3 rounded-full bg-[#5C6BC0] mr-2"></div>
             <span className="text-gray-600">Resolution</span>
           </div>
         </div>

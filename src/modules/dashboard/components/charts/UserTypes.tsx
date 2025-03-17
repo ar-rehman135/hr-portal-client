@@ -7,42 +7,55 @@ import { Card, CardTitle, CardContent, CardHeader } from '@/shadcn/card';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const data = {
-  labels: ['New Users', 'Returning Users'],
-  datasets: [
-    {
-      data: [65, 35],
-      backgroundColor: [COLORS.PINK, COLORS.LIGHT_BLUE],
-      borderWidth: 0,
-      cutout: '70%',
-    },
-  ],
-};
+interface UserTypeProps {
+  demographicsData: {
+    new: number;
+    returning: number;
+  };
+}
 
-const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false,
-    },
-    tooltip: {
-      callbacks: {
-        label: (context: any) => `${context.label}: ${context.raw}%`,
+export function UserType({ demographicsData }: UserTypeProps | any) {
+  const { new: newUsers, returning: returningUsers } = demographicsData;
+
+  const data = {
+    labels: ['New Users', 'Returning Users'],
+    datasets: [
+      {
+        data: [newUsers, returningUsers],
+        backgroundColor: [COLORS.PINK, COLORS.LIGHT_BLUE],
+        borderWidth: 0,
+        cutout: '70%',
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => `${context.label}: ${context.raw}%`,
+        },
       },
     },
-  },
-};
+  };
 
-const types = [
-  { name: 'New Users', percentage: '65%', color: COLORS.PINK },
-  { name: 'Returning Users', percentage: '35%', color: COLORS.LIGHT_BLUE },
-];
+  const types = [
+    { name: 'New Users', percentage: `${newUsers}%`, color: COLORS.PINK },
+    {
+      name: 'Returning Users',
+      percentage: `${returningUsers}%`,
+      color: COLORS.LIGHT_BLUE,
+    },
+  ];
 
-export function UserType() {
   return (
     <Card className="border-gray-200 shadow-sm rounded-2xl">
-      <CardHeader className="flex  flex-row items-center justify-between pb-4 pt-2 px-6 bg-border rounded-tl-2xl rounded-tr-2xl">
+      <CardHeader className="flex flex-row items-center justify-between pb-4 pt-2 px-6 bg-border rounded-tl-2xl rounded-tr-2xl">
         <div>
           <CardTitle className="text-base font-medium text-gray-800">
             User Type
@@ -76,7 +89,9 @@ export function UserType() {
         </div>
 
         <p className="text-xs text-gray-500 mt-4">
-          75% of users are returning, indicating strong retention
+          {returningUsers > newUsers
+            ? `${returningUsers}% of users are returning, indicating strong retention.`
+            : `${newUsers}% of users are new, showing growth potential.`}
         </p>
       </CardContent>
     </Card>

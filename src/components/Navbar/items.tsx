@@ -86,16 +86,16 @@ export const queryOptions = [
     label: 'Last 30 Days',
     value: '30d',
   },
-  {
-    label: 'Last 3 Months',
-    value: '3m',
-  },
-  {
-    label: 'Last 6 Months',
-    value: '6m',
-  },
-  {
-    label: 'Last 12 Months',
-    value: '12m',
-  },
+  // {
+  //   label: 'Last 3 Months',
+  //   value: '3m',
+  // },
+  // {
+  //   label: 'Last 6 Months',
+  //   value: '6m',
+  // },
+  // {
+  //   label: 'Last 12 Months',
+  //   value: '12m',
+  // },
 ];

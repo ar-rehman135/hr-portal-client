@@ -1,6 +1,10 @@
 'use client';
 
-export function QueriesPerUser() {
+export function QueriesPerUser({
+  unique_users,
+}: {
+  unique_users: number | undefined;
+}) {
   return (
     <div className="border border-gray-200 shadow-sm rounded-2xl">
       <div className="mb-4 bg-border flex-row items-center justify-between pb-4 pt-2 px-6 rounded-tl-2xl rounded-tr-2xl">
@@ -11,7 +15,7 @@ export function QueriesPerUser() {
       </div>
       <div className="flex flex-col items-center justify-center h-[250px]">
         <div className="text-[100px] font-bold text-primary leading-none">
-          3.7
+          {unique_users}
         </div>
         <div className="text-base font-medium text-gray-700 mt-2">
           Queries per user

@@ -16,7 +16,9 @@ import { PasswordInput } from '@/shadcn/password-input';
 import { Form, FormControl, FormField, FormMessage } from '@/shadcn/form';
 import { useAppSelector } from '@/store/hooks';
 import { getAuthDataSelector } from '@/store/selectors';
+import { useLoginMutation } from '@/store/features/auth/unProtectedApi';
 import AuthLayout from '@/layouts/AuthLayout';
+import axios from 'axios';
 
 const authSchema = z.object({
   email: z
@@ -34,23 +36,54 @@ export function Login() {
   }>({
     password: false,
   });
-
+  const [login, { isLoading }] = useLoginMutation();
   const [remember, setRemember] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: {
+      email: 'ar.rehmanmirza@gmail.com',
+      password: 'StrongPassword123!',
+    },
   });
 
   const handleCheckboxChange = (val: boolean) => {
     setRemember(val);
   };
 
-  const onSubmit = (values: z.infer<typeof authSchema>) => {
+  const onSubmit = async (values: z.infer<typeof authSchema>) => {
     try {
-      console.log(values);
+      const payload = {
+        AuthFlow: 'USER_PASSWORD_AUTH',
+        ClientId: 'h2slt84ni83bpmisc723ii6om',
+        AuthParameters: {
+          USERNAME: 'ar.rehmanmirza@gmail.com',
+          PASSWORD: 'StrongPassword123!',
+        },
+      };
+
+      const response = await axios.post(
+        'https://cognito-idp.us-east-1.amazonaws.com/',
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/x-amz-json-1.1',
+            'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth',
+          },
+        }
+      );
+
+      console.log('response', response);
+
+      if (response?.data?.AuthenticationResult) {
+        localStorage.setItem(
+          'token',
+          response.data.AuthenticationResult.IdToken
+        );
+        router.push('/');
+      }
     } catch (error) {
-      console.error('Login Error:', error);
+      console.log('error');
     }
   };
 

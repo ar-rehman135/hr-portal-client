@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { CalendarIcon, SearchIcon, MenuIcon, LogOutIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
@@ -22,14 +22,102 @@ import { DropdownMenuTrigger } from '@/shadcn/dropdown-menu';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { getAuthDataSelector } from '@/store/selectors';
 import { userLoggedOut } from '@/store/features/auth/authSlice';
+import { useRouter } from 'next/navigation';
+import {
+  useLazyGetDashboardStatesQuery,
+  useLazyGetMetricsCategoriesQuery,
+  useLazyGetMetricsDemographicsQuery,
+  useLazyGetMetricsPerformancesQuery,
+  useLazyGetMetricsUsageQuery,
+} from '@/store/features/auth/protectedApi';
+import { useSelector } from 'react-redux';
+import { AppState } from '@/store/rootReducer';
+import {
+  setCategoryData,
+  setDashboardStats,
+  setDemographicsData,
+  setPerformanceData,
+  setUsageStats,
+} from '@/store/features/auth/dashboardSlice';
 
-export function Header({ onSearch, onSelect, selectedValue }: ILayoutProps) {
+export function Header({
+  onSearch,
+  onSelect,
+  selectedValue = '7d',
+}: ILayoutProps) {
   const { user } = useAppSelector(getAuthDataSelector);
-  const dispatch = useAppDispatch();
+  console.log(selectedValue, ' datepicker');
+  const [selected, setSelected] = useState(selectedValue);
 
+  const [getDashboardState, { data, isFetching }] =
+    useLazyGetDashboardStatesQuery();
+
+  const [getMetricsUSage, { data: usageData, isFetching: isUsageData }] =
+    useLazyGetMetricsUsageQuery();
+
+  const [
+    getMetricsCategories,
+    { data: categoryData, isFetching: isCategoryData },
+  ] = useLazyGetMetricsCategoriesQuery();
+
+  const [
+    getMetricsPerformances,
+    { data: performancesData, isFetching: isPerformancesData },
+  ] = useLazyGetMetricsPerformancesQuery();
+
+  const [
+    getMetricsDemographics,
+    { data: demographicsData, isFetching: isDemographicsData },
+  ] = useLazyGetMetricsDemographicsQuery();
+
+  const dashboardStats = useSelector(
+    (state: AppState) => state.dashboard.dashboardStats
+  );
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const handleLogout = () => {
     dispatch(userLoggedOut());
+    router.push('/login');
   };
+  const handleSelectChange = (value: string) => {
+    fetchData(value);
+    setSelected(value);
+  };
+
+  const fetchData = async (value: string) => {
+    try {
+      const response = await getDashboardState({
+        range: value,
+      });
+      const responsemetricusage = await getMetricsUSage({
+        range: value,
+      });
+
+      const responsemetriccategory = await getMetricsCategories({
+        range: value,
+      });
+
+      const responsemetricperformance = await getMetricsPerformances({
+        range: value,
+      });
+
+      const responsemetricdemographics = await getMetricsDemographics({
+        range: value,
+      });
+
+      dispatch(setDashboardStats(response.data));
+      dispatch(setUsageStats(responsemetricusage.data));
+      dispatch(setCategoryData(responsemetriccategory.data));
+      dispatch(setPerformanceData(responsemetricperformance.data));
+      dispatch(setDemographicsData(responsemetricdemographics?.data));
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData('7d');
+  }, [selectedValue]);
 
   return (
     <header className=" top-0 pl-[280px] grid grid-cols-12  right-0 z-30 w-full flex-col sm:flex-row items-center py-2 px-4 sm:px-6 border-b border-border bg-background header-custom gap-4 sm:gap-2">
@@ -46,18 +134,11 @@ export function Header({ onSearch, onSelect, selectedValue }: ILayoutProps) {
       </div>
       <div className="col-span-3" />
       <div className="flex items-center justify-end w-full flex-1 gap-2 sm:gap-4 col-span-4 ">
-        <Select
-          defaultValue={queryOptions[0].value}
-          onValueChange={onSelect}
-          value={selectedValue}
-        >
+        <Select onValueChange={handleSelectChange} value={selected}>
           <SelectTrigger className="bg-border">
             <CalendarIcon className="w-4 h-4" />
             <SelectValue placeholder="Select Value" className="text-primary">
-              {
-                queryOptions.find((option) => option.value === selectedValue)
-                  ?.label
-              }
+              {queryOptions.find((option) => option.value === selected)?.label}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>

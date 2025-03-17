@@ -7,6 +7,7 @@ import { DashboardHeader } from './components/DashboardHeader';
 import { DashboardMetrics } from './components/DashboardMetrics';
 import { DashboardContent } from './components/DashboardContent';
 import { TabNavigation } from './components/tabs';
+import { useLazyGetDashboardStatesQuery } from '@/store/features/auth/protectedApi';
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState('usage-metrics');

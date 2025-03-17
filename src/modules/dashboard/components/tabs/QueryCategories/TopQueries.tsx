@@ -9,7 +9,7 @@ const queries = [
   { id: 6, text: 'How do I update my tax withholdings?', count: 164 },
 ];
 
-export function TopQueries() {
+export function TopQueries({ top_5_categories }: { top_5_categories: any }) {
   return (
     <div className="border border-gray-200 shadow-sm rounded-2xl">
       <div className="mb-4 bg-border flex-row items-center justify-between pb-4 pt-2 px-6 rounded-tl-2xl rounded-tr-2xl">
@@ -18,12 +18,14 @@ export function TopQueries() {
           Most frequent user questions
         </p>
       </div>
-      <div className="space-y-4 h-[250px] px-4">
-        {queries.map((query) => (
-          <div key={query.id} className="flex items-center justify-between">
+      <div className="space-y-4 h-[250px] px-4 overflow-auto">
+        {top_5_categories?.map((query: any, index: number) => (
+          <div key={index} className="flex items-center justify-between">
             <div className="flex items-start">
-              <div className="text-xs font-medium mr-2">{query.id}.</div>
-              <div className="text-xs font-medium">{query.text}</div>
+              <div className="text-xs font-medium mr-2">{index + 1}.</div>
+              <div className="text-xs font-medium capitalize">
+                {query.category}
+              </div>
             </div>
             <div className="text-xs bg-primary text-white px-2 py-1 rounded-full">
               {query.count}
