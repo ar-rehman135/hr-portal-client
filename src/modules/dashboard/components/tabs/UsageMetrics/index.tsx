@@ -2,9 +2,7 @@ import { UsageOverTime } from '@/modules/dashboard/components/charts/UsageOverti
 
 import { QueriesPerUser } from './QueriesPerUser';
 
-interface UsageMetricsProps {}
-
-export function UsageMetrics({}: UsageMetricsProps) {
+export function UsageMetrics() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <UsageOverTime />

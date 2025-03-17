@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { permanentRedirect, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 
 import { z } from 'zod';
@@ -49,6 +48,7 @@ export function Login() {
 
   const onSubmit = (values: z.infer<typeof authSchema>) => {
     try {
+      console.log(values);
     } catch (error) {
       console.error('Login Error:', error);
     }
