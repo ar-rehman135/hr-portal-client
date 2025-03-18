@@ -192,6 +192,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shadcn/card';
 import { Line } from 'react-chartjs-2';
 
 import { COLORS } from '@/contants';
+import { useAppSelector } from '@/store/hooks';
+import { getAuthDataSelector } from '@/store/selectors';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
+import { Loader2 } from 'lucide-react';
+import { ChartLoading } from './Loading';
+import { NoChartData } from './NoData';
 
 ChartJS.register(
   CategoryScale,
@@ -280,8 +286,25 @@ export function UsageOverTime({
     query_volume: { [key: string]: number };
   } | null;
 }) {
+  const { usageStatsLoading } = useAppSelector(getDashboardDataSelector);
+
+  if (usageStatsLoading) {
+    return (
+      <ChartLoading
+        title="Usage Over Time"
+        description="Daily active users and query volume"
+      />
+    );
+  }
+
   if (!chart_data) {
-    return null;
+    return (
+      <NoChartData
+        title="Usage Over Time"
+        description="Daily active users and query volume"
+        message="No data"
+      />
+    );
   }
 
   const labels = Object.keys(chart_data.daily_active_users).sort();
@@ -338,11 +361,13 @@ export function UsageOverTime({
         </div>
         <div className="mt-4 flex space-x-6 text-xs">
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-[#E040FB] mr-2"></div>
+            <div
+              className={`w-3 h-3 rounded-full bg-[${COLORS.MAGENTA}] mr-2`}
+            ></div>
             <span className="text-gray-600">Queries</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-[#5C6BC0] mr-2"></div>
+            <div className="w-3 h-3 rounded-full bg-primary mr-2"></div>
             <span className="text-gray-600">Users</span>
           </div>
         </div>

@@ -14,11 +14,11 @@ import { Button } from '@/shadcn/button';
 import { Checkbox } from '@/shadcn/checkbox';
 import { PasswordInput } from '@/shadcn/password-input';
 import { Form, FormControl, FormField, FormMessage } from '@/shadcn/form';
-import { useAppSelector } from '@/store/hooks';
-import { getAuthDataSelector } from '@/store/selectors';
-import { useLoginMutation } from '@/store/features/auth/unProtectedApi';
 import AuthLayout from '@/layouts/AuthLayout';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
+import { CLIENT_ID, LOGIN_API_URL } from '@/configs/api';
 
 const authSchema = z.object({
   email: z
@@ -30,14 +30,13 @@ const authSchema = z.object({
 
 export function Login() {
   const router = useRouter();
-  const { isAuthenticated } = useAppSelector(getAuthDataSelector);
   const [hide, setHide] = useState<{
     password: boolean;
   }>({
     password: false,
   });
-  const [login, { isLoading }] = useLoginMutation();
   const [remember, setRemember] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
@@ -53,37 +52,36 @@ export function Login() {
 
   const onSubmit = async (values: z.infer<typeof authSchema>) => {
     try {
+      setIsLoading(true);
       const payload = {
         AuthFlow: 'USER_PASSWORD_AUTH',
-        ClientId: 'h2slt84ni83bpmisc723ii6om',
+        ClientId: CLIENT_ID,
         AuthParameters: {
-          USERNAME: 'ar.rehmanmirza@gmail.com',
-          PASSWORD: 'StrongPassword123!',
+          USERNAME: values.email,
+          PASSWORD: values.password,
         },
       };
 
-      const response = await axios.post(
-        'https://cognito-idp.us-east-1.amazonaws.com/',
-        payload,
-        {
-          headers: {
-            'Content-Type': 'application/x-amz-json-1.1',
-            'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth',
-          },
-        }
-      );
+      const response = await axios.post(LOGIN_API_URL, payload, {
+        headers: {
+          'Content-Type': 'application/x-amz-json-1.1',
+          'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth',
+        },
+      });
 
-      console.log('response', response);
+      toast.success('Login successful');
 
       if (response?.data?.AuthenticationResult) {
         localStorage.setItem(
           'token',
           response.data.AuthenticationResult.IdToken
         );
-        router.push('/');
+        router.push('/home');
       }
     } catch (error) {
-      console.log('error');
+      toast.error('Invalid email or password');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -168,9 +166,13 @@ export function Login() {
                   variant="default"
                   type="submit"
                   className="w-full mt-5 font-bold  text-[#FFFFFF]"
-                  disabled={false}
+                  disabled={isLoading}
                 >
-                  Sign in
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    'Sign in'
+                  )}
                 </Button>
               </div>
             </form>

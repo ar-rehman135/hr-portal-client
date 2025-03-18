@@ -1,14 +1,12 @@
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '@/store/hooks';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
+
 import { DepartmentUsage } from '../../charts/DepartmentUsage';
 import { UsageBySeniority } from '../../charts/UsageBySenority';
-
-import { AppState } from '@/store/rootReducer';
 import { UserType } from '../../charts/UserTypes';
 
 export function Demographics() {
-  const demographicsData = useSelector(
-    (state: AppState) => state.dashboard.demographicsData
-  );
+  const { demographicsData } = useAppSelector(getDashboardDataSelector);
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <DepartmentUsage demographicsData={demographicsData?.department_usage} />

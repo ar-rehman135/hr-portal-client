@@ -4,6 +4,10 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { COLORS } from '@/contants';
 import { Card, CardTitle, CardContent, CardHeader } from '@/shadcn/card';
+import { useAppSelector } from '@/store/hooks';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
+import { ChartLoading } from './Loading';
+import { NoChartData } from './NoData';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -15,6 +19,24 @@ interface UserTypeProps {
 }
 
 export function UserType({ demographicsData }: UserTypeProps | any) {
+  const { demographicsDataLoading } = useAppSelector(getDashboardDataSelector);
+
+  if (demographicsDataLoading) {
+    return (
+      <ChartLoading title="User Type" description="New vs. returning users" />
+    );
+  }
+
+  if (!demographicsData || Object.keys(demographicsData).length === 0) {
+    return (
+      <NoChartData
+        title="User Type"
+        description="New vs. returning users"
+        message="No data"
+      />
+    );
+  }
+
   const { new: newUsers, returning: returningUsers } = demographicsData;
 
   const data = {
