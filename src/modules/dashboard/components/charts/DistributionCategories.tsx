@@ -4,7 +4,10 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { COLORS } from '@/contants';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shadcn/card';
-
+import { useAppSelector } from '@/store/hooks';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
+import { ChartLoading } from './Loading';
+import { NoChartData } from './NoData';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function DistributionCategories({
@@ -16,6 +19,27 @@ export function DistributionCategories({
   const dataValues = category_distribution?.map(
     (item: any) => item?.percentage
   );
+
+  const { categoryDataLoading } = useAppSelector(getDashboardDataSelector);
+
+  if (categoryDataLoading) {
+    return (
+      <ChartLoading
+        title="Distribution Categories"
+        description="Distribution by HR category"
+      />
+    );
+  }
+
+  if (!category_distribution) {
+    return (
+      <NoChartData
+        title="Distribution Categories"
+        description="Distribution by HR category"
+        message="No data"
+      />
+    );
+  }
 
   const backgroundColors = [
     COLORS.MAGENTA,

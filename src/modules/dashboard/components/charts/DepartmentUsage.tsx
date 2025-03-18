@@ -4,6 +4,10 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shadcn/card';
 import { COLORS } from '@/contants';
+import { useAppSelector } from '@/store/hooks';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
+import { ChartLoading } from './Loading';
+import { NoChartData } from './NoData';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -16,6 +20,24 @@ interface DepartmentUsageProps {
 }
 
 export function DepartmentUsage({ demographicsData }: DepartmentUsageProps) {
+  const { demographicsDataLoading } = useAppSelector(getDashboardDataSelector);
+
+  if (demographicsDataLoading) {
+    return (
+      <ChartLoading title="Department Usage" description="Department usage" />
+    );
+  }
+
+  if (!demographicsData) {
+    return (
+      <NoChartData
+        title="Department Usage"
+        description="Department usage"
+        message="No data"
+      />
+    );
+  }
+
   const labels = Object.keys(demographicsData || {});
   const values = Object.values(demographicsData || {});
 

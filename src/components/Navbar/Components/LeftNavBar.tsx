@@ -1,35 +1,32 @@
 'use client';
+import { useRouter } from 'next/navigation';
 
 import type React from 'react';
 import Link from 'next/link';
 import Image from '@/shadcn/image';
 import { navItems } from '../items';
 import { cn } from '@/lib/cn';
-import { ArrowDownIcon, LogOutIcon } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/shadcn/dropdown-menu';
+import { LogOutIcon } from 'lucide-react';
+
 import NextImage from '@/shadcn/image';
 import { UserIcon } from 'lucide-react';
 import { Button } from '@/shadcn/button';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { getAuthDataSelector } from '@/store/selectors';
 import { userLoggedOut } from '@/store/features/auth/authSlice';
-
 interface LeftNavbarProps {
   open: boolean;
   setOpen: (state: boolean) => void;
 }
 
-const LeftNavbar = ({ open, setOpen }: LeftNavbarProps) => {
+const LeftNavbar = ({ open }: LeftNavbarProps) => {
   const { user } = useAppSelector(getAuthDataSelector);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     dispatch(userLoggedOut());
+    router.push('/login');
   };
 
   return (
@@ -101,6 +98,7 @@ const LeftNavbar = ({ open, setOpen }: LeftNavbarProps) => {
           <Button
             className="rounded-none  border-none !outline-none bg-transaparent hover:bg-transaparent !p-0 transition-none justify-end"
             variant={'outline'}
+            onClick={handleLogout}
           >
             <LogOutIcon className="w-5 h-5 text-red-500" />
           </Button>

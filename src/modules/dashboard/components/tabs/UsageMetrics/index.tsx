@@ -1,13 +1,11 @@
 import { UsageOverTime } from '@/modules/dashboard/components/charts/UsageOvertime';
 
 import { QueriesPerUser } from './QueriesPerUser';
-import { useSelector } from 'react-redux';
-import { AppState } from '@/store/rootReducer';
+import { useAppSelector } from '@/store/hooks';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
 
 export function UsageMetrics() {
-  const usageStats = useSelector(
-    (state: AppState) => state.dashboard.usageStats
-  );
+  const { usageStats } = useAppSelector(getDashboardDataSelector);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

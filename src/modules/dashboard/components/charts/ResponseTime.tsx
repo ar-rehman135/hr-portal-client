@@ -12,6 +12,10 @@ import {
 } from 'chart.js';
 import { COLORS } from '@/contants';
 import { CardTitle, CardHeader, Card, CardContent } from '@/shadcn/card';
+import { useAppSelector } from '@/store/hooks';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
+import { ChartLoading } from './Loading';
+import { NoChartData } from './NoData';
 
 ChartJS.register(
   CategoryScale,
@@ -27,6 +31,24 @@ export function ResponseTime({
 }: {
   performancesData?: any[];
 }) {
+  const { performanceDataLoading } = useAppSelector(getDashboardDataSelector);
+
+  if (performanceDataLoading) {
+    return (
+      <ChartLoading title="Response Time" description="Average response time" />
+    );
+  }
+
+  if (performancesData.length === 0) {
+    return (
+      <NoChartData
+        title="Response Time"
+        description="Average response time"
+        message="No data"
+      />
+    );
+  }
+
   const labels = performancesData.map((entry) => entry.date);
   const responseTimes = performancesData.map(
     (entry) => entry.average_response_time / 1000
