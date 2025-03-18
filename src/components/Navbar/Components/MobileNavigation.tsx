@@ -4,7 +4,7 @@ import { navItems } from '../items';
 
 export function MobileNavigation() {
   return (
-    <div className="fixed top-[55px] left-0 right-0 flex overflow-x-auto gap-x-4 scrollbar-hide border-b border-border bg-background">
+    <div className="fixed top-[190px] left-0 right-0 flex overflow-x-auto gap-x-4 scrollbar-hide border-b border-border bg-background">
       <div className="flex items-center gap-x-4">
         {navItems.map(({ category, items }) => (
           <div key={category} className="flex flex-row gap-2">

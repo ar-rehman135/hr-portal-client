@@ -120,6 +120,7 @@ export function Navbar({ children, title }: INavbar) {
               handleSelectChange={handleSelectChange}
               user={user}
               handleLogout={handleLogout}
+              selected={selected}
             />
           </div>
           <div
@@ -132,9 +133,13 @@ export function Navbar({ children, title }: INavbar) {
       </div>
 
       <div className="block md:hidden relative">
-        <MobileHeader title={title} handleSelectChange={handleSelectChange} />
+        <MobileHeader
+          title={title}
+          handleSelectChange={handleSelectChange}
+          selected={selected}
+        />
         <MobileNavigation />
-        <div className={cn('mt-[200px] overflow-auto px-6')}>{children}</div>
+        <div className={cn('mt-[300px] overflow-auto px-6')}>{children}</div>
       </div>
     </>
   );

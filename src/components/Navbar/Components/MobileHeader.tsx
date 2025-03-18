@@ -91,7 +91,7 @@ export function MobileHeader({
         </div>
         <div className="col-span-3 mb-4" />
         <div className="flex items-center justify-end w-full flex-1 gap-2 sm:gap-4 col-span-4 ">
-          <Select onValueChange={handleSelectChange} value={selected}>
+          <Select onValueChange={handleSelectChange} value={selected} defaultValue={"7d"}>
             <SelectTrigger className="bg-border">
               <CalendarIcon className="w-4 h-4" />
               <SelectValue placeholder="Select Value" className="text-primary">
