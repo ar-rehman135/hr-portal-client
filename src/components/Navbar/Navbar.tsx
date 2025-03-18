@@ -19,15 +19,24 @@ import {
   useLazyGetMetricsPerformancesQuery,
   useLazyGetMetricsUsageQuery,
 } from '@/store/features/auth/protectedApi';
-import { useSelector } from 'react-redux';
-import { AppState } from '@/store/rootReducer';
 import {
+  clearErrors,
   setCategoryData,
+  setCategoryDataError,
+  setCategoryDataLoading,
   setDashboardStats,
+  setDashboardStatsLoading,
   setDemographicsData,
+  setDemographicsDataError,
+  setDemographicsDataLoading,
   setPerformanceData,
+  setPerformanceDataError,
+  setPerformanceDataLoading,
   setUsageStats,
+  setUsageStatsError,
+  setUsageStatsLoading,
 } from '@/store/features/auth/dashboardSlice';
+import { batch } from 'react-redux';
 
 interface INavbar extends ILayoutProps {}
 
@@ -36,36 +45,24 @@ export function Navbar({ children, title }: INavbar) {
   const { user } = useAppSelector(getAuthDataSelector);
   const [selected, setSelected] = useState('7d');
 
-  const [getDashboardState, { data, isFetching }] =
-    useLazyGetDashboardStatesQuery();
+  const [getDashboardState] = useLazyGetDashboardStatesQuery();
 
-  const [getMetricsUSage, { data: usageData, isFetching: isUsageData }] =
-    useLazyGetMetricsUsageQuery();
+  const [getMetricsUSage] = useLazyGetMetricsUsageQuery();
 
-  const [
-    getMetricsCategories,
-    { data: categoryData, isFetching: isCategoryData },
-  ] = useLazyGetMetricsCategoriesQuery();
+  const [getMetricsCategories] = useLazyGetMetricsCategoriesQuery();
 
-  const [
-    getMetricsPerformances,
-    { data: performancesData, isFetching: isPerformancesData },
-  ] = useLazyGetMetricsPerformancesQuery();
+  const [getMetricsPerformances] = useLazyGetMetricsPerformancesQuery();
 
-  const [
-    getMetricsDemographics,
-    { data: demographicsData, isFetching: isDemographicsData },
-  ] = useLazyGetMetricsDemographicsQuery();
+  const [getMetricsDemographics] = useLazyGetMetricsDemographicsQuery();
 
-  const dashboardStats = useSelector(
-    (state: AppState) => state.dashboard.dashboardStats
-  );
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   const handleLogout = () => {
     dispatch(userLoggedOut());
     router.push('/login');
   };
+
   const handleSelectChange = (value: string) => {
     fetchData(value);
     setSelected(value);
@@ -73,32 +70,77 @@ export function Navbar({ children, title }: INavbar) {
 
   const fetchData = async (value: string) => {
     try {
-      const response = await getDashboardState({
-        range: value,
-      });
-      const responsemetricusage = await getMetricsUSage({
-        range: value,
-      });
+      dispatch(clearErrors());
+      dispatch(setDashboardStatsLoading(true));
+      dispatch(setUsageStatsLoading(true));
+      dispatch(setCategoryDataLoading(true));
+      dispatch(setPerformanceDataLoading(true));
+      dispatch(setDemographicsDataLoading(true));
 
-      const responsemetriccategory = await getMetricsCategories({
-        range: value,
-      });
+      const [
+        response,
+        responsemetricusage,
+        responsemetriccategory,
+        responsemetricperformance,
+        responsemetricdemographics,
+      ] = await Promise.all([
+        getDashboardState({
+          range: value,
+        }),
+        getMetricsUSage({
+          range: value,
+        }),
+        getMetricsCategories({
+          range: value,
+        }),
+        getMetricsPerformances({
+          range: value,
+        }),
+        getMetricsDemographics({
+          range: value,
+        }),
+      ]);
 
-      const responsemetricperformance = await getMetricsPerformances({
-        range: value,
-      });
+      if (response.data) {
+        dispatch(setDashboardStats(response.data));
+      }
+      if (responsemetricusage.data) {
+        dispatch(setUsageStats(responsemetricusage.data));
+      }
+      if (responsemetriccategory.data) {
+        dispatch(setCategoryData(responsemetriccategory.data));
+      }
+      if (responsemetricperformance.data) {
+        dispatch(setPerformanceData(responsemetricperformance.data));
+      }
+      if (responsemetricdemographics.data) {
+        dispatch(setDemographicsData(responsemetricdemographics.data));
+      }
 
-      const responsemetricdemographics = await getMetricsDemographics({
-        range: value,
-      });
-
-      dispatch(setDashboardStats(response.data));
-      dispatch(setUsageStats(responsemetricusage.data));
-      dispatch(setCategoryData(responsemetriccategory.data));
-      dispatch(setPerformanceData(responsemetricperformance.data));
-      dispatch(setDemographicsData(responsemetricdemographics?.data));
+      if (responsemetricusage.error) {
+        dispatch(setUsageStatsError(responsemetricusage.error as string));
+      }
+      if (responsemetriccategory.error) {
+        dispatch(setCategoryDataError(responsemetriccategory.error as string));
+      }
+      if (responsemetricperformance.error) {
+        dispatch(
+          setPerformanceDataError(responsemetricperformance.error as string)
+        );
+      }
+      if (responsemetricdemographics.error) {
+        dispatch(
+          setDemographicsDataError(responsemetricdemographics.error as string)
+        );
+      }
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+    } finally {
+      dispatch(setDashboardStatsLoading(false));
+      dispatch(setUsageStatsLoading(false));
+      dispatch(setCategoryDataLoading(false));
+      dispatch(setPerformanceDataLoading(false));
+      dispatch(setDemographicsDataLoading(false));
     }
   };
 

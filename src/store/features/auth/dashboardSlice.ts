@@ -46,10 +46,20 @@ interface DemographicsData {
 
 interface DashboardState {
   dashboardStats: DashboardStats | null;
+  dashboardStatsLoading: boolean;
+  dashboardStatsError: string | null;
   usageStats: UsageStats | null;
+  usageStatsLoading: boolean;
+  usageStatsError: string | null;
   categoryData: CategoryData | null;
+  categoryDataLoading: boolean;
+  categoryDataError: string | null;
   performanceData: PerformanceData | null;
+  performanceDataLoading: boolean;
+  performanceDataError: string | null;
   demographicsData: DemographicsData | null;
+  demographicsDataLoading: boolean;
+  demographicsDataError: string | null;
 }
 
 const initialState: DashboardState = {
@@ -58,6 +68,16 @@ const initialState: DashboardState = {
   categoryData: null,
   performanceData: null,
   demographicsData: null,
+  dashboardStatsLoading: false,
+  dashboardStatsError: null,
+  usageStatsLoading: false,
+  usageStatsError: null,
+  categoryDataLoading: false,
+  categoryDataError: null,
+  performanceDataLoading: false,
+  performanceDataError: null,
+  demographicsDataLoading: false,
+  demographicsDataError: null,
 };
 
 const dashboardSlice = createSlice({
@@ -79,6 +99,43 @@ const dashboardSlice = createSlice({
     setDemographicsData: (state, action: PayloadAction<DemographicsData>) => {
       state.demographicsData = action.payload;
     },
+    setDashboardStatsLoading: (state, action: PayloadAction<boolean>) => {
+      state.dashboardStatsLoading = action.payload;
+    },
+    setUsageStatsLoading: (state, action: PayloadAction<boolean>) => {
+      state.usageStatsLoading = action.payload;
+    },
+    setCategoryDataLoading: (state, action: PayloadAction<boolean>) => {
+      state.categoryDataLoading = action.payload;
+    },
+    setPerformanceDataLoading: (state, action: PayloadAction<boolean>) => {
+      state.performanceDataLoading = action.payload;
+    },
+    setDemographicsDataLoading: (state, action: PayloadAction<boolean>) => {
+      state.demographicsDataLoading = action.payload;
+    },
+    setDashboardStatsError: (state, action: PayloadAction<string | null>) => {
+      state.dashboardStatsError = action.payload;
+    },
+    setUsageStatsError: (state, action: PayloadAction<string | null>) => {
+      state.usageStatsError = action.payload;
+    },
+    setCategoryDataError: (state, action: PayloadAction<string | null>) => {
+      state.categoryDataError = action.payload;
+    },
+    setPerformanceDataError: (state, action: PayloadAction<string | null>) => {
+      state.performanceDataError = action.payload;
+    },
+    setDemographicsDataError: (state, action: PayloadAction<string | null>) => {
+      state.demographicsDataError = action.payload;
+    },
+    clearErrors: (state) => {
+      state.dashboardStatsError = null;
+      state.usageStatsError = null;
+      state.categoryDataError = null;
+      state.performanceDataError = null;
+      state.demographicsDataError = null;
+    },
   },
 });
 
@@ -88,6 +145,17 @@ export const {
   setCategoryData,
   setPerformanceData,
   setDemographicsData,
+  setDashboardStatsLoading,
+  setUsageStatsLoading,
+  setCategoryDataLoading,
+  setPerformanceDataLoading,
+  setDemographicsDataLoading,
+  setDashboardStatsError,
+  setUsageStatsError,
+  setCategoryDataError,
+  setPerformanceDataError,
+  setDemographicsDataError,
+  clearErrors,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

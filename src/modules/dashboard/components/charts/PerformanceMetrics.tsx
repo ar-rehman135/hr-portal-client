@@ -15,6 +15,10 @@ import {
 import { COLORS } from '@/contants';
 import { CardContent, CardHeader } from '@/shadcn/card';
 import { Card } from '@/shadcn/card';
+import { useAppSelector } from '@/store/hooks';
+import { ChartLoading } from './Loading';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
+import { NoChartData } from './NoData';
 
 ChartJS.register(
   CategoryScale,
@@ -123,8 +127,25 @@ export function PerformanceMetrics({
 }: {
   performancesData: any;
 }) {
+  const { performanceDataLoading } = useAppSelector(getDashboardDataSelector);
+
+  if (performanceDataLoading) {
+    return (
+      <ChartLoading
+        title="Performance Metrics"
+        description="Satisfaction and resolution rates"
+      />
+    );
+  }
+
   if (!performancesData) {
-    return null;
+    return (
+      <NoChartData
+        title="Performance Metrics"
+        description="Satisfaction and resolution rates"
+        message="No data"
+      />
+    );
   }
 
   const labels = performancesData.map((item: any) => item.date);

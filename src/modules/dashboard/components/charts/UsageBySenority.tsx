@@ -2,6 +2,10 @@
 
 import { COLORS } from '@/contants';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shadcn/card';
+import { useAppSelector } from '@/store/hooks';
+import { getDashboardDataSelector } from '@/store/features/auth/dashboardSelector';
+import { ChartLoading } from './Loading';
+import { NoChartData } from './NoData';
 
 const LEVEL_COLORS: Record<string, string> = {
   junior: COLORS.MAGENTA,
@@ -15,6 +19,26 @@ export function UsageBySeniority({
 }: {
   demographicsData: Record<string, number> | undefined;
 }) {
+  const { demographicsDataLoading } = useAppSelector(getDashboardDataSelector);
+
+  if (demographicsDataLoading) {
+    return (
+      <ChartLoading
+        title="Usage by Seniority"
+        description="Employee level breakdown"
+      />
+    );
+  }
+
+  if (!demographicsData || Object.keys(demographicsData).length === 0) {
+    return (
+      <NoChartData
+        title="Usage by Seniority"
+        description="Employee level breakdown"
+        message="No data"
+      />
+    );
+  }
   const levels = Object.entries(demographicsData).map(([name, percentage]) => ({
     name: name.charAt(0).toUpperCase() + name.slice(1),
     percentage,
